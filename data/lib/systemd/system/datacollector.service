@@ -1,0 +1,21 @@
+# /lib/systemd/system datacollector unit file
+# 
+# Unit file to manage datacollector
+#   Note : Some variables need to be set for service to work correcrly. 
+#          See /var/lib/lacework/README on how to set them
+
+[Unit]
+Description=Lacework agent
+
+[Service]
+EnvironmentFile=-/var/lib/lacework/config/commandline.conf
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+TimeoutStopSec=5
+
+ExecStart=/bin/sh -c "exec /var/lib/lacework/datacollector ${LWDC_OPTS}"
+
+[Install]
+WantedBy=multi-user.target
+

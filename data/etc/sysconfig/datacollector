@@ -1,0 +1,8 @@
+# /etc/default/datacollector
+# 
+# This file contains datacollector Upstart and sysVinit configuration file
+
+if [ -f /var/lib/lacework/config/commandline.conf ]; then
+	. /var/lib/lacework/config/commandline.conf
+fi
+

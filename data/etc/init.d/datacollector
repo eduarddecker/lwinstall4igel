@@ -1,0 +1,117 @@
+#!/bin/sh
+set -e
+
+### BEGIN INIT INFO
+# Provides:           datacollector
+# Default-Start:      2 3 4 5
+# Required-Start:
+# Required-Stop:
+# Default-Stop:       0 1 6
+# Short-Description:  collects interesting metadata for security analysis
+# Description:
+#  Datacollector is a tool to collect interesting metadata for security analysis
+### END INIT INFO
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/var/lib/lacework
+
+BASE=$(basename $0)
+
+# modify these in /etc/default/$BASE (/etc/default/datacollector)
+LWDC=/var/lib/lacework/$BASE
+# This is the pid file managed by process itself
+LWDC_PIDFILE=/var/lib/lacework/$BASE.pid
+# This is the pid file created/managed by start-stop-daemon
+LWDC_SSD_PIDFILE=/var/run/$BASE-ssd.pid
+LWDC_LOGFILE=/var/log/lacework/$BASE.console.log
+LWDC_OPTS=
+LWDC_DESC="Datacollector"
+
+# Get lsb functions
+. /lib/lsb/init-functions
+
+if [ -f /etc/default/$BASE ]; then
+	. /etc/default/$BASE
+fi
+
+# Check process is present
+if [ ! -x $LWDC ]; then
+	log_failure_msg "$LWDC not present or not executable"
+	exit 1
+fi
+
+check_init() {
+	 # see also init_is_upstart in /lib/lsb/init-functions (which isn't available in Ubuntu 12.04, or we'd use it directly)
+	 if [ -x /sbin/initctl ] && /sbin/initctl version 2>/dev/null | grep -q upstart; then        
+                log_failure_msg "$LWDC_DESC is managed via upstart, try using service $BASE $1"
+                exit 1
+         fi
+}
+
+fail_unless_root() {
+	if [ "$(id -u)" != '0' ]; then
+		log_failure_msg "$LWDC_DESC must be run as root"
+		exit 1
+	fi
+}
+
+case "$1" in
+	start)
+		check_init
+		fail_unless_root
+		touch "$LWDC_LOGFILE"
+
+		ulimit -n 1048576
+		if [ "$BASH" ]; then
+			ulimit -u 1048576
+		else
+			ulimit -p 1048576
+		fi
+
+		log_begin_msg "Starting $LWDC_DESC: $BASE"
+		start-stop-daemon --start --background \
+			--no-close \
+			--exec "$LWDC" \
+			--pidfile "$LWDC_SSD_PIDFILE" \
+			--make-pidfile \
+			-- \
+				$LWDC_OPTS  \
+					>> "$LWDC_LOGFILE" 2>&1
+		log_end_msg $?
+		;;
+
+	stop)
+		check_init
+		fail_unless_root
+                pid=`cat $LWDC_SSD_PIDFILE`
+                pkill -TERM -P $pid
+		log_begin_msg "Stopping $LWDC_DESC: $BASE"
+		start-stop-daemon --stop --pidfile "$LWDC_SSD_PIDFILE"
+		log_end_msg $?
+		;;
+
+	restart)
+		check_init
+		fail_unless_root
+		lwdc_pid=`cat "$LWDC_SSD_PIDFILE" 2>/dev/null`
+		[ -n "$lwdc_pid" ] \
+			&& ps -p $lwdc_pid > /dev/null 2>&1 \
+			&& $0 stop
+		$0 start
+		;;
+
+	force-reload)
+		check_init
+		fail_unless_root
+		$0 restart
+		;;
+
+	status)
+		check_init
+		status_of_proc -p "$LWDC_SSD_PIDFILE" "$LWDC" "$LWDC_DESC"
+		;;
+
+	*)
+		echo "Usage: service datacollector {start|stop|restart|status}"
+		exit 1
+		;;
+esac

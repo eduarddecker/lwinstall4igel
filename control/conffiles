@@ -1,0 +1,4 @@
+/etc/default/datacollector
+/etc/init.d/datacollector
+/etc/init/datacollector.conf
+/etc/sysconfig/datacollector

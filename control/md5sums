@@ -1,0 +1,9 @@
+eac61c03055f86622e25e2dd03a1822d  etc/default/datacollector
+ddcab5fc532e0cf846e53f7ffef44c6a  etc/init/datacollector.conf
+efc3c81bbe9424e38b7b657b6803aaca  etc/init.d/datacollector
+eac61c03055f86622e25e2dd03a1822d  etc/sysconfig/datacollector
+dfd3bbd0fa02cce291df5228bc1402c7  lib/systemd/system/datacollector.service
+e3c20959187d88ce6d1b9db2b9639d61  usr/share/doc/lacework/changelog.gz
+50d174a16577f2833e420b9685affa84  var/lib/lacework/6.6.0.14654/datacollector
+b3d7330b226ab021ea40a9f0d4e3e728  var/lib/lacework/README
+0734ae869377c2a3cf8e5f4279fb37a0  var/lib/lacework/config/config.json.example

@@ -1,0 +1,47 @@
+# Example Config json file. 
+#  --  Lines starting with '#' are ignored.
+#
+#  NOTE: To change, please make a copy to config.json and update the copy
+{
+  "Tokens": {
+       "AccessToken" : ""
+  }
+# 	AccessToken identifying the customer
+#
+#  "ProxyUrl" : "",
+# 	URL for a http or socks proxy.
+#       ENV variables http_proxy, https_proxy, all_proxy are also checked
+#       ProxyUrl does not need to be set if ENV variables are already set
+#
+#  "Aggregator" : "disable",
+#	Enables aggregator. Can be set to 'enable' or 'disable'
+#
+#  "AggregatorPort": "3883",
+#  "AggregatorDownloadCache": "enable",
+#  "AggregatorSensitiveDir": "/var/lib/lacework/sensitive/",
+#	Other Aggregator parameters. Only used if Aggregator is set to 'enable'
+#
+#  "AutoUpgrade" : "enable",
+#	Auto upgrade the binary. Can be set to 'enable' or 'disable'
+#
+#  "checkfreq" : "default",
+# 	Frequency (in minutes), to checkin with Lacework server for config etc
+#	Default : 60
+#
+#  "DbSize" : "default",
+#	Size of disk space (in MB) that can be used for Caching events.
+#	If aggregator is enabled, dbsize should also be increased.
+#	Default : 20 if aggregator is disable. Otherwise 1024
+#
+#  "AggregatorUrl" : "",
+#	URL for aggregator to use. Can be http:// or https://
+#
+#  "AggregatorCert" : "",
+#	Cert for aggregator, in case URL is https://
+#
+#  "Tags": { "CrownJewel": "false", "Deployment" : "PoC" },
+#	Name-Value pairs to be used as tags for this machine.
+#
+#  "Tokens": { },
+#	Security tokens
+}

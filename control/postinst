@@ -1,0 +1,34 @@
+#!/bin/sh
+
+if [ -d /run/systemd/system ];
+then
+	echo "Systemd detected"
+	systemctl daemon-reload                       || :
+	systemctl enable datacollector                || :
+	systemctl start datacollector                 || :
+elif [ -f /sbin/initctl ]
+then
+	echo "Upstart detected"
+	initctl start datacollector                   || :
+elif [ -f /sbin/rc-service ]
+then
+	echo "openrc detected"
+	rc-update add datacollector                   || :
+	rc-service datacollector start                || :
+else
+	service datacollector start                   || :
+
+	status=`which chkconfig`
+	if [ "$?" = "0" ];
+	then
+		echo "chkconfig detected"
+      		chkconfig datacollector on            || :
+	fi
+
+	status=`which update-rc.d`
+	if [ "$?" = "0" ];
+	then
+		echo "updaterc.d detected"
+	        update-rc.d datacollector defaults    || :
+	fi
+fi

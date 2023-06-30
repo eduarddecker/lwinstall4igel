@@ -1,0 +1,11 @@
+Package: lacework
+Version: 6.6.0.14654
+License: Lacework Inc
+Vendor: Lacework Inc
+Architecture: amd64
+Maintainer: info@lacework.net
+Installed-Size: 36138
+Section: default
+Priority: optional
+Homepage: www.lacework.net
+Description: Lacework agent
